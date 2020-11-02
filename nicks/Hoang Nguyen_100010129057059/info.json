@@ -1,0 +1,29 @@
+{
+    "id": "100010129057059",
+    "birthday": "12/23/1987",
+    "education": [
+        {
+            "school": {
+                "id": "103256838688",
+                "name": "New York University"
+            },
+            "type": "College",
+            "id": "147171018963866"
+        }
+    ],
+    "email": "maianh827@yahoo.com",
+    "first_name": "Hoang",
+    "gender": "male",
+    "last_name": "Nguyen",
+    "link": "https://www.facebook.com/profile.php?id=100010129057059",
+    "location": {
+        "id": "106578779375574",
+        "name": "New York, Florida"
+    },
+    "locale": "vi_VN",
+    "name": "Hoang Nguyen",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2015-10-09T09:04:39+0000",
+    "verified": true
+}

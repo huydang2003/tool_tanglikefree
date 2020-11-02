@@ -1,0 +1,49 @@
+{
+    "id": "100006186282595",
+    "birthday": "09/07/1990",
+    "education": [
+        {
+            "school": {
+                "id": "151258014907126",
+                "name": "THPT Phan Đăng Lưu"
+            },
+            "type": "High School",
+            "id": "2866274073588774"
+        }
+    ],
+    "email": "hongthuy884@yahoo.com",
+    "favorite_teams": [
+        {
+            "id": "168052290441434",
+            "name": "CLB Bóng Đá Hoàng Anh Gia Lai"
+        },
+        {
+            "id": "7724542745",
+            "name": "Manchester United"
+        },
+        {
+            "id": "171522852874952",
+            "name": "Juventus"
+        }
+    ],
+    "first_name": "Ngọc Linh",
+    "gender": "female",
+    "hometown": {
+        "id": "111786105507069",
+        "name": "Quỳ Hợp"
+    },
+    "last_name": "Trương",
+    "link": "https://www.facebook.com/profile.php?id=100006186282595",
+    "location": {
+        "id": "112963075384670",
+        "name": "Vinh"
+    },
+    "locale": "vi_VN",
+    "middle_name": "Thị",
+    "name": "Trương Thị Ngọc Linh",
+    "published_timeline": true,
+    "relationship_status": "Độc thân",
+    "timezone": 7,
+    "updated_time": "2020-10-06T08:41:24+0000",
+    "verified": true
+}
