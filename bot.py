@@ -80,18 +80,20 @@ class Tool_Tanglikefree():
 		else: token = ''
 		return token
 
-	def creat_backup(self, token):
-		params = {'access_token': token}
-		url = 'https://graph.facebook.com/me?feed'
-		res = self.ses.get(url, params=params)
-		data = res.json()
-		path_data = f'nicks/{data["name"]}_{data["id"]}'
-		self.info['name'] = data["name"]
-		if not os.path.exists(path_data): os.mkdir(path_data)
-		path_output = f'{path_data}/info.json'
-		f = open(path_output, 'w', encoding='utf8')
-		json.dump(data, f, ensure_ascii=False, indent=4)
-		f.close()
+	def creat_backup(self):
+		token = self.get_token()
+		if token!='':
+			params = {'access_token': token}
+			url = 'https://graph.facebook.com/me?feed'
+			res = self.ses.get(url, params=params)
+			data = res.json()
+			path_data = f'nicks/{data["name"]}_{data["id"]}'
+			self.info['name'] = data["name"]
+			if not os.path.exists(path_data): os.mkdir(path_data)
+			path_output = f'{path_data}/info.json'
+			f = open(path_output, 'w', encoding='utf8')
+			json.dump(data, f, ensure_ascii=False, indent=4)
+			f.close()
 
 	def get_post(self):
 		headers = self.headers_tlf
@@ -144,7 +146,6 @@ class Tool_Tanglikefree():
 		if token=='':
 			print(">>>Cookie die!!!")
 			return 0
-		self.creat_backup(token)
 		coin = self.info['VND']
 		cout = 0
 		cout_failed = 0
@@ -217,6 +218,7 @@ if __name__ == '__main__':
 			check = tool.login_tlf()
 			if check == True:
 				print(">>>Login Success!!!")
+				tool.creat_backup()
 				print(f"\n>>>making: {tool.info['name']}({tool.info['idfb']})")
 				check = tool.run_tool(loop, delay)
 
