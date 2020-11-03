@@ -212,13 +212,15 @@ class Tool_Tanglikefree():
 				password = nick[1]
 				print(f"\n[Make nick: {username}]")
 
-				if username in self.list_nick_out: continue
 				if username not in self.list_nick_in: 
 					check = self.start(username, password)
 					if check!=True: self.list_nick_out.append(username)
 					self.show_info(username)
 					self.list_nick_in.append(username)
 
+				if username in self.list_nick_out:
+					if len(self.list_nick_out) >= len(self.list_nick): return 0
+					continue
 
 				print(f">>>making: {self.list_config[username]['name_fb']}")
 
