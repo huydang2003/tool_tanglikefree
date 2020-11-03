@@ -130,8 +130,7 @@ class Tool_Tanglikefree():
 		if list_li==[]: return 0	
 		url = list_li[0].a.get('href')
 		link = 'https://mbasic.facebook.com' + url
-		try: self.ses.get(link, headers=headers, timeout=2)
-		except: pass
+		self.ses.get(link, headers=headers)
 		return 1
 
 	def check_cookie(self):
@@ -141,13 +140,13 @@ class Tool_Tanglikefree():
 
 # cookie die 0, hoan thanh mot vong lap 1,  het nv 2, block 3
 
-	def run_tool(self, loop, delay):
+	def run_tool(self, loop, delay, cout):
 		token = self.get_token()
 		if token=='':
 			print(">>>Cookie die!!!")
 			return 0
 		coin = self.info['VND']
-		cout = 0
+		cout_local = 0
 		cout_failed = 0
 		while True:
 			while True:
@@ -160,13 +159,7 @@ class Tool_Tanglikefree():
 				idpost = post['idpost']
 				request_id = self.get_request()
 				check = self.like_post(idpost)
-				if check==0:
-					print('>>>link error!!!')	
-					check = self.check_cookie()
-					if check == False:
-						print(">>>Cookie die!!!")
-						return 0
-
+				if check==0: cout_failed+=1
 				else:
 					ck = self.submit_post(idpost, request_id)
 					if ck!=True:
@@ -180,10 +173,12 @@ class Tool_Tanglikefree():
 								print(">>>Cookie die!!!")
 								return 0		
 					else:
+						cout_failed=0
 						cout += 1
+						cout_local += 1
 						coin += 40
 						print(f"  >{cout}<|{idpost}|>+40<|{coin} coin", end=' ')
-						if cout>=loop: return 1
+						if cout_local>=loop: return cout
 						s = random.randint(delay[0], delay[1])
 						print(f">>> wait {s}s")
 						sleep(s)
@@ -192,6 +187,7 @@ if __name__ == '__main__':
 	if not os.path.exists('nicks'): os.mkdir('nicks')
 	if not os.path.exists('list_nick.txt'): open('list_nick.txt', 'w').close()
 	if not os.path.exists('list_cookie.txt'): open('list_cookie.txt', 'w').close()
+	os.system('clear')
 	print('\n\t>>>TOOL AUTO TANGLIKEFREE<<<\n')
 	print("Vào thư mục chứa file thiết lập!!!")
 	print("[setting]")
@@ -204,13 +200,13 @@ if __name__ == '__main__':
 
 	list_nick = open('list_nick.txt', 'r', encoding='utf8').read().split("\n")
 	list_nick_out = []
-	max_job = {}
+	cout_all = {}
 	check_close = False
 	while True:
 		if check_close: break
 		for nick in list_nick:
 			username = nick.split('|')[0]
-			if username not in max_job: max_job[username] = 0
+			if username not in cout_all: cout_all[username] = 0
 			if username in list_nick_out: continue
 			print(f"\n[Make nick: {username}]")
 			password = nick.split('|')[1]
@@ -220,11 +216,15 @@ if __name__ == '__main__':
 				print(">>>Login Success!!!")
 				tool.creat_backup()
 				print(f"\n>>>making: {tool.info['name']}({tool.info['idfb']})")
-				check = tool.run_tool(loop, delay)
+				cout = cout_all[username]
+				check = tool.run_tool(loop, delay, cout)
 
 				if check==0 or check==3: list_nick_out.append(username)
-				else: max_job[username] += loop
-				if max_job[username] >= sl:
+				elif check==2:
+					pass
+				else:
+					cout_all[username] = check
+				if cout_all[username] >= sl:
 					print(f"\n[Nick {username} đã hoàn thành chỉ tiêu]")
 					list_nick_out.append(username)
 
