@@ -227,46 +227,50 @@ class Tool_Tanglikefree():
 				cout_loop = 0
 				check_close = False
 				while True:
-					list_post = self.get_post(access_token)
-					if list_post==[]:
-						print("[Hết NV]") 
-						continue
-					for post in list_post:
-						idpost = post['idpost']
-						res = self.make_nv(idpost, access_token, cookie_fb)
-						if res==False:
-							self.cout_all[username]['failed']+=1
-							if self.cout_all[username]['failed']>3:
-								check = self.check_cookie_fb(cookie_fb)
-								if check==True: print("\t[BLOCK LIKE]")
-								else: print("\t[COOKIE DIE]")
-								self.list_nick_out.append(username)
-								check_close = True
-								break
-						else:
-							cout_loop += 1
-							self.list_config[username]['info']['VND'] += res
-							self.cout_all[username]['nv'] += 1
-							self.cout_all[username]['failed'] = 0
-							coin = self.list_config[username]['info']['VND']
-							nv = self.cout_all[username]['nv']
-							failed = self.cout_all[username]['failed']
+					try:
+						list_post = self.get_post(access_token)
+						if list_post==[]:
+							print("[Hết NV]") 
+							continue
+						for post in list_post:
+							idpost = post['idpost']
+							res = self.make_nv(idpost, access_token, cookie_fb)
+							if res==False:
+								self.cout_all[username]['failed']+=1
+								if self.cout_all[username]['failed']>3:
+									check = self.check_cookie_fb(cookie_fb)
+									if check==True: print("\t[BLOCK LIKE]")
+									else: print("\t[COOKIE DIE]")
+									self.list_nick_out.append(username)
+									check_close = True
+									break
+							else:
+								cout_loop += 1
+								self.list_config[username]['info']['VND'] += res
+								self.cout_all[username]['nv'] += 1
+								self.cout_all[username]['failed'] = 0
+								coin = self.list_config[username]['info']['VND']
+								nv = self.cout_all[username]['nv']
+								failed = self.cout_all[username]['failed']
 
-							print(f"  >{nv}<|{idpost}|>+40<|{coin} coin", end=' ')
-							if nv >= sl:
-								print(f"\n[Nick {username} đã hoàn thành chỉ tiêu]")
-								self.list_nick_out.append(username)
-								check_close = True
-								break
+								print(f"  >{nv}<|{idpost}|>+40<|{coin} coin", end=' ')
+								if nv >= sl:
+									print(f"\n[Nick {username} đã hoàn thành chỉ tiêu]")
+									self.list_nick_out.append(username)
+									check_close = True
+									break
 
-							if cout_loop>=loop:
-								check_close = True
-								break
+								if cout_loop>=loop:
+									check_close = True
+									break
 
-							s = random.randint(delay[0], delay[1])
-							print(f">>> wait {s}s")
-							sleep(s)
-					if check_close==True: break
+								s = random.randint(delay[0], delay[1])
+								print(f">>> wait {s}s")
+								sleep(s)
+						if check_close==True: break
+					except:
+						print("Lỗi mạng đợi 5s")
+						sleep(5)
 				if len(self.list_nick_out) >= len(self.list_nick): return 0
 				print(f"\n[Nghỉ ngơi {time_stop}s]")
 				sleep(time_stop)			
