@@ -236,10 +236,11 @@ class Tool_Tanglikefree():
 							continue
 						for post in list_post:
 							idpost = post['idpost']
-							res = self.make_nv(idpost, access_token, cookie_fb)
+							try: res = self.make_nv(idpost, access_token, cookie_fb)
+						    except: res = False
 							if res==False:
 								self.cout_all[username]['failed']+=1
-								if self.cout_all[username]['failed']>3:
+								if self.cout_all[username]['failed']>10:
 									check = self.check_cookie_fb(cookie_fb)
 									if check==True: print("\t[BLOCK LIKE]")
 									else: print("\t[COOKIE DIE]")
@@ -270,9 +271,7 @@ class Tool_Tanglikefree():
 								print(f">>> wait {s}s")
 								sleep(s)
 						if check_close==True: break
-					except:
-						print("Lỗi mạng đợi 5s")
-						sleep(5)
+					except: sleep(3)
 				if len(self.list_nick_out) >= len(self.list_nick): return 0
 				print(f"\n[Nghỉ ngơi {time_stop}s]")
 				sleep(time_stop)			
@@ -292,3 +291,4 @@ if __name__ == '__main__':
 	tool = Tool_Tanglikefree(list_nick, list_cookie)
 	tool.run_tool()
 	tool.close_tool()
+	os.system('exit')
