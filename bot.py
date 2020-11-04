@@ -15,6 +15,8 @@ class Tool_Tanglikefree():
 		self.cout_all = {}
 		self.list_nick_out = []
 		self.list_nick_in = []
+		self.list_nick_run = []
+		self.list_idpost_error = []
 		self.headers_fb = None
 		self.headers_tlf = None
 
@@ -118,6 +120,16 @@ class Tool_Tanglikefree():
 		list_post = res.json()
 		return list_post
 # /////////////////////////
+	def check_block_like(self, token_fb, idpost):
+		params = {'access_token': token_fb}
+		url = f'https://graph.facebook.com/{idpost}/likes'
+		res = self.ses.post(url, params=params)
+		data = res.json()
+		if data == True: return 1
+		else:
+			if data['error']['code'] != 368: return 0
+			else: return 2
+
 	def get_request_id(self, access_token):
 		headers = self.get_headers_tlf(access_token)
 		url = 'https://tanglikefree.com/api/auth/creat_request'	
@@ -147,13 +159,19 @@ class Tool_Tanglikefree():
 		data = res.json()
 		if data['error']==False: return True
 		else: return False
-
-	def make_nv(self, idpost, access_token, cookie_fb):
+# 40 thành công, 1 thất bại, 2 lỗi link, 3 chặn like, 4 cookie die 
+	def make_nv(self, idpost, access_token, cookie_fb, token_fb):
 		res = self.like_post(idpost, cookie_fb)
-		if res==0: return False
+		if res==0:
+			check = self.check_cookie_fb(cookie_fb)
+			if check==False: return 4
+			else: return 2
 		request_id = self.get_request_id(access_token)
 		check = self.submit_post(idpost, request_id, access_token)
-		if check==False: return False
+		if check==False:
+			check = self.check_block_like(token_fb, idpost)
+			if check==0: return 3
+			return 1
 		return 40
 # /////////////////////////
 	def start(self, username, password):
@@ -193,13 +211,9 @@ class Tool_Tanglikefree():
 	def run_tool(self):
 		self.show_nick()
 
+		option = input('->>Nhập nick chạy: ').split(" ")
+		for op in option: self.list_nick_run.append(self.list_nick[int(op)-1])
 		print("[SETTING]")
-		check = input('->>Chạy 1 nick[stt], chạy nhiều nick[enter]: ')
-		if check!='':
-			stt = int(check) - 1
-			print(f"!!!Chỉ làm nick: {self.list_nick[stt].split('|')[0]}")
-			self.list_nick = [self.list_nick[stt]]
-
 		sl = int(input("\t+Giới hạn NV: "))
 		loop = int(input("\t+Nghỉ khi làm được: "))
 		time_stop = int(input("\t+Nhập thời gian nghỉ(s): "))
@@ -208,11 +222,11 @@ class Tool_Tanglikefree():
 		delay[1] = int(delay[1])
 
 		while True:
-			for nick in self.list_nick:
+			for nick in self.list_nick_run:
 				nick = nick.split('|')
 				username = nick[0]
 				password = nick[1]
-				print(f"\n[Make nick: {username}]")
+				print(f"\n==================\n[Make nick: {username}]")
 
 				if username not in self.list_nick_in: 
 					check = self.start(username, password)
@@ -221,13 +235,14 @@ class Tool_Tanglikefree():
 					self.list_nick_in.append(username)
 
 				if username in self.list_nick_out:
-					if len(self.list_nick_out) >= len(self.list_nick): return 0
+					if len(self.list_nick_out) >= len(self.list_nick_run): return 0
 					continue
 
 				print(f">>>making: {self.list_config[username]['name_fb']}")
 
 				access_token = self.list_config[username]['access_token']
 				cookie_fb = self.list_config[username]['cookie_fb']
+				token_fb = self.list_config[username]['token_fb']
 				cout_loop = 0
 				check_close = False
 				while True:
@@ -238,17 +253,18 @@ class Tool_Tanglikefree():
 							continue
 						for post in list_post:
 							idpost = post['idpost']
-							try: res = self.make_nv(idpost, access_token, cookie_fb)
-							except: res = False
-							if res==False:
-								self.cout_all[username]['failed']+=1
-								if self.cout_all[username]['failed']>10:
-									check = self.check_cookie_fb(cookie_fb)
-									if check==True: print("\t[BLOCK LIKE]")
-									else: print("\t[COOKIE DIE]")
-									self.list_nick_out.append(username)
-									check_close = True
-									break
+							if idpost in self.list_idpost_error: continue
+							try: res = self.make_nv(idpost, access_token, cookie_fb, token_fb)
+							except: res = 1
+							if res==1 or res==2:
+								self.list_idpost_error.append(idpost)
+								continue
+							elif res==3 or res==4:
+								if res==3: print("\t[BLOCK LIKE]")
+								else: print("\t[COOKIE DIE]")
+								self.list_nick_out.append(username)
+								check_close = True
+								break
 							else:
 								cout_loop += 1
 								self.list_config[username]['info']['VND'] += res
@@ -273,8 +289,9 @@ class Tool_Tanglikefree():
 								print(f">>> wait {s}s")
 								sleep(s)
 						if check_close==True: break
-					except: sleep(3)
-				if len(self.list_nick_out) >= len(self.list_nick): return 0
+					except: sleep(5)
+					
+				if len(self.list_nick_out) >= len(self.list_nick_run): return 0
 				print(f"\n[Nghỉ ngơi {time_stop}s]")
 				sleep(time_stop)			
 
