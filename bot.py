@@ -171,11 +171,13 @@ class Tool_Tanglikefree():
 
 	def show_nick(self):
 		print("<<<<<///Danh sách nick:")
-		for cout in range(0, len(self.list_nick)):
-			nick = self.list_nick[cout].split('|')[0]
+		cout = 1
+		for nick in self.list_nick:
+			nick = nick.split('|')[0]
 			self.list_config[nick] = {}
 			self.cout_all[nick] = {'nv':0, 'coin':0, 'failed':0}
 			print(f"\t{cout}.{nick}")
+			cout+=1
 		print("///>>>>>")
 
 	def show_info(self, username):
@@ -194,7 +196,7 @@ class Tool_Tanglikefree():
 		print("[SETTING]")
 		check = input('->>Chạy 1 nick[stt], chạy nhiều nick[enter]: ')
 		if check!='':
-			stt = int(check)
+			stt = int(check) - 1
 			print(f"!!!Chỉ làm nick: {self.list_nick[stt].split('|')[0]}")
 			self.list_nick = [self.list_nick[stt]]
 
@@ -237,7 +239,7 @@ class Tool_Tanglikefree():
 						for post in list_post:
 							idpost = post['idpost']
 							try: res = self.make_nv(idpost, access_token, cookie_fb)
-						    except: res = False
+							except: res = False
 							if res==False:
 								self.cout_all[username]['failed']+=1
 								if self.cout_all[username]['failed']>10:
