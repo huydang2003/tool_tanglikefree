@@ -1,0 +1,52 @@
+{
+    "id": "100005744539085",
+    "birthday": "12/12/1984",
+    "education": [
+        {
+            "school": {
+                "id": "223707457704836",
+                "name": "Đại học Khoa học Huế"
+            },
+            "type": "College",
+            "id": "1512051372329666"
+        },
+        {
+            "school": {
+                "id": "160490800675123",
+                "name": "THPT Thị Xã Quảng Trị"
+            },
+            "type": "High School",
+            "id": "1512051332329670"
+        }
+    ],
+    "email": "phantran52@yahoo.com",
+    "first_name": "Trân",
+    "gender": "female",
+    "hometown": {
+        "id": "133571830058631",
+        "name": "Quảng Trị (thị xã)"
+    },
+    "last_name": "Bảo",
+    "link": "https://www.facebook.com/profile.php?id=100005744539085",
+    "location": {
+        "id": "133571830058631",
+        "name": "Quảng Trị (thị xã)"
+    },
+    "locale": "vi_VN",
+    "name": "Trân Bảo",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2020-11-04T11:09:56+0000",
+    "verified": true,
+    "work": [
+        {
+            "end_date": "0000-00",
+            "employer": {
+                "id": "107751605926185",
+                "name": "Huế"
+            },
+            "start_date": "0000-00",
+            "id": "1512051452329658"
+        }
+    ]
+}

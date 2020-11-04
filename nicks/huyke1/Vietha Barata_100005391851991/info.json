@@ -1,0 +1,45 @@
+{
+    "id": "100005391851991",
+    "birthday": "01/11/1985",
+    "education": [
+        {
+            "school": {
+                "id": "255222197949144",
+                "name": "Đại học Bách khoa Hà Nội - Hanoi University of Science and Technology"
+            },
+            "type": "College",
+            "id": "1367971446725904"
+        }
+    ],
+    "email": "vietha879@yahoo.com",
+    "first_name": "Vietha",
+    "gender": "female",
+    "hometown": {
+        "id": "108259475871818",
+        "name": "Seoul, Korea"
+    },
+    "last_name": "Barata",
+    "link": "https://www.facebook.com/vietha.barata.96",
+    "location": {
+        "id": "112413425436794",
+        "name": "Bekasi"
+    },
+    "locale": "vi_VN",
+    "name": "Vietha Barata",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2020-11-04T11:13:23+0000",
+    "username": "vietha.barata.96",
+    "verified": true,
+    "work": [
+        {
+            "end_date": "0000-00",
+            "employer": {
+                "id": "106388046062960",
+                "name": "Hà Nội"
+            },
+            "start_date": "2020-10-05",
+            "id": "1370810593108656"
+        }
+    ]
+}
