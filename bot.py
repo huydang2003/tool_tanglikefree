@@ -261,21 +261,24 @@ class Tool_Tanglikefree():
 								continue
 							elif res==3 or res==4:
 								if res==3:
-									self.cout_all[nick]['block']+=1
-									if self.cout_all[nick]['block']>3: print("\t[BLOCK LIKE]")
-								else: print("\t[COOKIE DIE]")
-								self.list_nick_out.append(username)
-								check_close = True
-								break
+									self.cout_all[username]['block']+=1
+									if self.cout_all[username]['block']>3:
+										print("\t[BLOCK LIKE]")
+										self.list_nick_out.append(username)
+										check_close = True
+										break		
+								else:
+									print("\t[COOKIE DIE]")
+									self.list_nick_out.append(username)
+									check_close = True
+									break
 							else:
 								cout_loop += 1
-								self.cout_all[nick]['block'] = 0
+								self.cout_all[username]['block'] = 0
 								self.list_config[username]['info']['VND'] += res
 								self.cout_all[username]['nv'] += 1
-								self.cout_all[username]['failed'] = 0
 								coin = self.list_config[username]['info']['VND']
 								nv = self.cout_all[username]['nv']
-								failed = self.cout_all[username]['failed']
 
 								print(f"  >{nv}<|{idpost}|>+40<|{coin} coin", end=' ')
 								if nv >= sl:
