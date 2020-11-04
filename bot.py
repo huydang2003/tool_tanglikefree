@@ -254,8 +254,7 @@ class Tool_Tanglikefree():
 						for post in list_post:
 							idpost = post['idpost']
 							if idpost in self.list_idpost_error: continue
-							try: res = self.make_nv(idpost, access_token, cookie_fb, token_fb)
-							except: res = 4
+							res = self.make_nv(idpost, access_token, cookie_fb, token_fb)
 							if res==1 or res==2:
 								self.list_idpost_error.append(idpost)
 								continue
