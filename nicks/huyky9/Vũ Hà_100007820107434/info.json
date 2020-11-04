@@ -1,0 +1,29 @@
+{
+    "id": "100007820107434",
+    "birthday": "10/17/1996",
+    "education": [
+        {
+            "school": {
+                "id": "290122931087365",
+                "name": "THPT Gò Quao"
+            },
+            "type": "College",
+            "id": "1379648665639124"
+        }
+    ],
+    "email": "vuha186@yahoo.com",
+    "first_name": "Vũ",
+    "gender": "female",
+    "last_name": "Hà",
+    "link": "https://www.facebook.com/profile.php?id=100007820107434",
+    "location": {
+        "id": "108458769184495",
+        "name": "Thành phố Hồ Chí Minh"
+    },
+    "locale": "vi_VN",
+    "name": "Vũ Hà",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2020-11-04T06:59:04+0000",
+    "verified": true
+}
