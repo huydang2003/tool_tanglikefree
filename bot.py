@@ -47,21 +47,23 @@ class Tool_Tanglikefree():
 		return headers_fb
 
 	def login_tlf(self, username, password):
-		url = 'https://tanglikefree.com/api/auth/login'
-		payload = {'username': username, 'password': password, 'disable': 'true'}
-		res = self.ses.post(url, data = payload)
-		data = res.json()
-		if data['error'] == False:
-			self.list_config[username]['access_token'] = data['data']['access_token']
-			access_token = self.list_config[username]['access_token']
-			self.list_config[username]['info'] = self.get_info(access_token)	
-			idfb = self.list_config[username]['info']['idfb']
-			self.list_config[username]['cookie_fb'] = self.get_cookie_fb(idfb)
-			cookie_fb = self.list_config[username]['cookie_fb']
-			self.list_config[username]['token_fb'] = self.get_token_fb(cookie_fb)
-			self.creat_backup(username)
-			return True
-		else: return False
+		try:
+			url = 'https://tanglikefree.com/api/auth/login'
+			payload = {'username': username, 'password': password, 'disable': 'true'}
+			res = self.ses.post(url, data = payload)
+			data = res.json()
+			if data['error'] == False:
+				self.list_config[username] = {}
+				self.list_config[username]['access_token'] = data['data']['access_token']
+				access_token = self.list_config[username]['access_token']
+				self.list_config[username]['info'] = self.get_info(access_token)	
+				idfb = self.list_config[username]['info']['idfb']
+				self.list_config[username]['cookie_fb'] = self.get_cookie_fb(idfb)
+				cookie_fb = self.list_config[username]['cookie_fb']
+				self.list_config[username]['token_fb'] = self.get_token_fb(cookie_fb)
+				return True
+			else: return False
+		except: return False
 
 	def get_info(self, access_token):
 		headers = {'Authorization': 'Bearer '+access_token}
@@ -80,6 +82,7 @@ class Tool_Tanglikefree():
 			temp = temp[0]
 			if temp==idfb:
 				print(f">>Cookie in line {cout}")
+				cookie = cookie.replace('\n', '')
 				return cookie
 		return ''
 
@@ -109,7 +112,7 @@ class Tool_Tanglikefree():
 			json.dump(data, f, ensure_ascii=False, indent=4)
 			f.close()
 	def check_cookie_fb(self, cookie_fb):
-		token = self.get_headers_fb(cookie_fb)
+		token = self.get_token_fb(cookie_fb)
 		if token=='': return False
 		else: return True
 # ////////////////////////
@@ -163,19 +166,6 @@ class Tool_Tanglikefree():
 			if check==False: return 1
 			else: return 40
 # /////////////////////////
-	def start(self, username, password):
-		if self.list_config[username] == {}:
-			check = self.login_tlf(username, password)
-			if check!=True:
-				print("\t[Login Failed!!!]")
-				return False
-		token_fb = self.list_config[username]['token_fb']
-		if token_fb=='':
-			print("\t[COOKIE DIE]")
-			return False
-		print("\t[Login Success!!!]")
-		return True
-
 	def show_nick(self):
 		print("<<<<<///Danh sách nick:")
 		cout = 1
@@ -218,10 +208,21 @@ class Tool_Tanglikefree():
 				print(f"\n==================\n[Make nick: {username}]")
 
 				if username not in self.list_nick_in: 
-					check = self.start(username, password)
-					if check!=True: self.list_nick_out.append(username)
-					self.show_info(username)
 					self.list_nick_in.append(username)
+					check = self.login_tlf(username, password)
+					if check==True:
+						print("\t[Login Success!!!]")
+						cookie_fb = self.list_config[username]['cookie_fb']
+						check = self.check_cookie_fb(cookie_fb)
+						if check==True:
+							self.creat_backup(username)
+							self.show_info(username)
+						else:
+							print("\t[COOKIE DIE]")
+							self.list_nick_out.append(username)
+					else:
+						print("\t[Login Failed!!!]")
+						self.list_nick_out.append(username)
 
 				if username in self.list_nick_out:
 					if len(self.list_nick_out) >= len(self.list_nick_run): return 0
@@ -244,9 +245,7 @@ class Tool_Tanglikefree():
 							idpost = post['idpost']
 							if idpost in self.list_idpost_error: continue
 							res = self.make_nv(idpost, access_token, cookie_fb, token_fb)
-							if res==1 or res==2:
-								self.list_idpost_error.append(idpost)
-								continue
+							if res==1 or res==2: self.list_idpost_error.append(idpost)
 							elif res==3 or res==4:
 								if res==3:
 									self.cout_all[username]['block']+=1
@@ -283,7 +282,12 @@ class Tool_Tanglikefree():
 								print(f">>> wait {s}s")
 								sleep(s)
 						if check_close==True: break
-					except: sleep(5)
+					except:
+						while True:
+							print("!!!Login after 5s")
+							sleep(5)
+							check = self.login_tlf(username, password)
+							if check==True: break
 					
 				if len(self.list_nick_out) >= len(self.list_nick_run): return 0
 				print(f"\n[Nghỉ ngơi {time_stop}s]")
