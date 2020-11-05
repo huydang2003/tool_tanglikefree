@@ -3,14 +3,13 @@ from bs4 import BeautifulSoup
 import json
 import os
 import random
-from time import sleep
+from time import sleep, localtime
 import re
 
 class Tool_Tanglikefree():
-	def __init__(self, list_nick, list_cookie):
+	def __init__(self, list_nick):
 		self.ses = requests.session()
 		self.list_nick = list_nick
-		self.list_cookie = list_cookie
 		self.list_config = {}
 		self.cout_all = {}
 		self.list_nick_out = []
@@ -47,7 +46,7 @@ class Tool_Tanglikefree():
 		return headers_fb
 
 	def login_tlf(self, username, password):
-		try:
+		# try:
 			url = 'https://tanglikefree.com/api/auth/login'
 			payload = {'username': username, 'password': password, 'disable': 'true'}
 			res = self.ses.post(url, data = payload)
@@ -59,12 +58,12 @@ class Tool_Tanglikefree():
 				access_token = self.list_config[username]['access_token']
 				self.list_config[username]['info'] = self.get_info(access_token)	
 				idfb = self.list_config[username]['info']['idfb']
-				self.list_config[username]['cookie_fb'] = self.get_cookie_fb(idfb)
+				self.list_config[username]['cookie_fb'] = self.get_cookie_fb(username, idfb)
 				cookie_fb = self.list_config[username]['cookie_fb']
 				self.list_config[username]['token_fb'] = self.get_token_fb(cookie_fb)
 				return True
 			else: return False
-		except: return False
+		# except: return False
 
 	def get_info(self, access_token):
 		headers = {'Authorization': 'Bearer '+access_token}
@@ -73,19 +72,14 @@ class Tool_Tanglikefree():
 		data = res.json()
 		if data['error'] == False: return data['data']
 
-	def get_cookie_fb(self, idfb):
-		cout = 0
-		for cookie in self.list_cookie:
-			cout+=1
-			if cookie=='': continue
-			temp = re.findall(r'c_user=(.*?);', cookie)
-			if temp == []: continue
-			temp = temp[0]
-			if temp==idfb:
-				print(f"><><><><><Cookie in line {cout}")
-				cookie = cookie.replace('\n', '')
-				return cookie
-		return ''
+	def get_cookie_fb(self, username, idfb):
+		cookie_fb = ''
+		for nick in self.list_nick:
+			info = nick.split('|')
+			if len(info)<3: continue
+			if info[0] == username:
+				cookie_fb = f'c_user={idfb};xs={info[2]};'
+		return cookie_fb
 
 	def get_token_fb(self, cookie_fb):
 		headers = self.get_headers_fb(cookie_fb)
@@ -167,10 +161,39 @@ class Tool_Tanglikefree():
 			if check==False: return 1
 			else: return 40
 # /////////////////////////
+	def time_now(self):
+		time_now = f'{localtime().tm_hour}:{localtime().tm_min}:{localtime().tm_sec}'
+		return time_now
+
+	def log_current(self, username, sl=None):
+		f = open('update.json', 'r')
+		storage_nv = json.load(f)
+		f.close()
+		f = open('update.json', 'w')
+		if username not in storage_nv: storage_nv[username] = 0
+		if sl!=None: storage_nv[username] += sl
+		json.dump(storage_nv, f, indent=4)
+		f.close()
+
+	def get_current(self, username):
+		f = open('update.json', 'r')
+		storage_nv = json.load(f)
+		sl_current = storage_nv[username]
+		f.close()
+		return sl_current
+
+	def check_reset(self):
+		check = f'{localtime().tm_mday}{localtime().tm_mon}'
+		today = open('today.txt', 'r').read()
+		if today!=check:
+			open('update.json', 'w').write('{}')
+			open('today.txt', 'w').write(f'{localtime().tm_mday}{localtime().tm_mon}')
+
 	def show_nick(self):
 		print("<<<<<///Danh sách nick:")
 		cout = 1
 		for nick in self.list_nick:
+			if '###' in nick: continue
 			nick = nick.split('|')[0]
 			self.list_config[nick] = {}
 			self.cout_all[nick] = {'nv':0, 'coin':0}
@@ -190,9 +213,14 @@ class Tool_Tanglikefree():
 
 	def run_tool(self):
 		self.show_nick()
+		self.check_reset()
 
-		option = input('->>Nhập nick chạy: ').split(" ")
-		for op in option: self.list_nick_run.append(self.list_nick[int(op)-1])
+		try: 
+			option = input('->>Nhập nick chạy: ').split(" ")
+			for op in option: self.list_nick_run.append(self.list_nick[int(op)])
+		except:
+			return 0
+		
 		print("[SETTING]")
 		sl = int(input("\t+Giới hạn NV: "))
 		loop = int(input("\t+Nghỉ khi làm được: "))
@@ -210,6 +238,8 @@ class Tool_Tanglikefree():
 
 				if username not in self.list_nick_in: 
 					self.list_nick_in.append(username)
+					self.log_current(username)
+					self.cout_all[username]['nv'] = self.get_current(username)
 					check = self.login_tlf(username, password)
 					if check==True:
 						print("\t[Login Success!!!]")
@@ -250,6 +280,7 @@ class Tool_Tanglikefree():
 							elif res==3 or res==4:
 								if res==3: print("\t[BLOCK LIKE]")
 								else: print("\t[COOKIE DIE]")
+								self.log_current(username, cout_loop)
 								self.list_nick_out.append(username)
 								check_close = True
 								break
@@ -260,20 +291,22 @@ class Tool_Tanglikefree():
 								self.cout_all[username]['nv'] += 1
 								coin = self.list_config[username]['info']['VND']
 								nv = self.cout_all[username]['nv']
-
-								print(f"  >{nv}<|{idpost}|>+40<|{coin} coin", end=' ')
+								time_now = self.time_now()
+								print(f"[{time_now}]><[{nv}]|{idpost}|>+40<|{coin} coin", end=' ')
+								
 								if nv >= sl:
 									print(f"\n[Nick {username} đã hoàn thành chỉ tiêu]")
+									self.log_current(username, cout_loop)
 									self.list_nick_out.append(username)
 									check_close = True
 									break
-
 								if cout_loop>=loop:
+									self.log_current(username, cout_loop)
 									check_close = True
 									break
 
 								s = random.randint(delay[0], delay[1])
-								print(f">>> wait {s}s")
+								print(f"[wait {s}s]")
 								sleep(s)
 						if check_close==True: break
 					except:
@@ -293,13 +326,12 @@ class Tool_Tanglikefree():
 
 if __name__ == '__main__':
 	if not os.path.exists('nicks'): os.mkdir('nicks')
-	if not os.path.exists('list_nick.txt'): open('list_nick.txt', 'w').close()
-	if not os.path.exists('list_cookie.txt'): open('list_cookie.txt', 'w').close()
+	if not os.path.exists('today.txt'): open('today.txt', 'w').write(f'{localtime().tm_mday}{localtime().tm_mon}')
+	if not os.path.exists('update.json'): open('update.json', 'w').write('{}')
+	if not os.path.exists('list_nick.txt'): open('list_nick.txt', 'w', encoding='utf8').write("###Định dạng: username|password|cookie_xs")
 	os.system('clear')
 	print('\n\t>>>TOOL AUTO TANGLIKEFREE<<<\n')
 	list_nick = open('list_nick.txt', 'r', encoding='utf8').read().split("\n")
-	list_cookie = open('list_cookie.txt', 'r', encoding='utf8').read().split("\n")
-	tool = Tool_Tanglikefree(list_nick, list_cookie)
+	tool = Tool_Tanglikefree(list_nick)
 	tool.run_tool()
 	tool.close_tool()
-	os.system('exit')
