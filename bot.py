@@ -53,7 +53,8 @@ class Tool_Tanglikefree():
 			res = self.ses.post(url, data = payload)
 			data = res.json()
 			if data['error'] == False:
-				self.list_config[username] = {}
+				if self.list_config[username]==None:
+					self.list_config[username] = {}
 				self.list_config[username]['access_token'] = data['data']['access_token']
 				access_token = self.list_config[username]['access_token']
 				self.list_config[username]['info'] = self.get_info(access_token)	
@@ -81,7 +82,7 @@ class Tool_Tanglikefree():
 			if temp == []: continue
 			temp = temp[0]
 			if temp==idfb:
-				print(f">>Cookie in line {cout}")
+				print(f"><><><><><Cookie in line {cout}")
 				cookie = cookie.replace('\n', '')
 				return cookie
 		return ''
@@ -172,7 +173,7 @@ class Tool_Tanglikefree():
 		for nick in self.list_nick:
 			nick = nick.split('|')[0]
 			self.list_config[nick] = {}
-			self.cout_all[nick] = {'nv':0, 'coin':0, 'block':0}
+			self.cout_all[nick] = {'nv':0, 'coin':0}
 			print(f"\t{cout}.{nick}")
 			cout+=1
 		print("///>>>>>")
@@ -247,18 +248,11 @@ class Tool_Tanglikefree():
 							res = self.make_nv(idpost, access_token, cookie_fb, token_fb)
 							if res==1 or res==2: self.list_idpost_error.append(idpost)
 							elif res==3 or res==4:
-								if res==3:
-									self.cout_all[username]['block']+=1
-									if self.cout_all[username]['block']>3:
-										print("\t[BLOCK LIKE]")
-										self.list_nick_out.append(username)
-										check_close = True
-										break		
-								else:
-									print("\t[COOKIE DIE]")
-									self.list_nick_out.append(username)
-									check_close = True
-									break
+								if res==3: print("\t[BLOCK LIKE]")
+								else: print("\t[COOKIE DIE]")
+								self.list_nick_out.append(username)
+								check_close = True
+								break
 							else:
 								cout_loop += 1
 								self.cout_all[username]['block'] = 0
