@@ -120,7 +120,15 @@ class Tool_Tanglikefree():
 		list_post = res.json()
 		return list_post
 # /////////////////////////
-	def check_block_like(self, token_fb, idpost):
+	def get_request_id(self, access_token):
+		headers = self.get_headers_tlf(access_token)
+		url = 'https://tanglikefree.com/api/auth/creat_request'	
+		res = self.ses.get(url, headers=headers)
+		data = res.json()
+		request_id = data['request_id']
+		return request_id
+	
+	def like_post(self, idpost, token_fb):
 		params = {'access_token': token_fb}
 		url = f'https://graph.facebook.com/{idpost}/likes'
 		res = self.ses.post(url, params=params)
@@ -129,27 +137,6 @@ class Tool_Tanglikefree():
 		else:
 			if data['error']['code'] != 368: return 0
 			else: return 2
-
-	def get_request_id(self, access_token):
-		headers = self.get_headers_tlf(access_token)
-		url = 'https://tanglikefree.com/api/auth/creat_request'	
-		res = self.ses.get(url, headers=headers)
-		data = res.json()
-		request_id = data['request_id']
-		return request_id
-
-	def like_post(self, idpost, cookie_fb):
-		headers = self.get_headers_fb(cookie_fb)
-		link = 'https://mbasic.facebook.com/reactions/picker/?is_permalink=1&ft_id='+idpost
-		res = self.ses.get(link, headers=headers)
-		soup = BeautifulSoup(res.content, 'html.parser')
-		soup = soup.body.find(id='root')
-		list_li = soup.find_all('li')
-		if list_li==[]: return 0	
-		url = list_li[0].a.get('href')
-		link = 'https://mbasic.facebook.com' + url
-		self.ses.get(link, headers=headers)
-		return 1
 
 	def submit_post(self, idpost, request_id, access_token):
 		headers = self.get_headers_tlf(access_token)
@@ -161,18 +148,20 @@ class Tool_Tanglikefree():
 		else: return False
 # 40 thành công, 1 thất bại, 2 lỗi link, 3 chặn like, 4 cookie die 
 	def make_nv(self, idpost, access_token, cookie_fb, token_fb):
-		res = self.like_post(idpost, cookie_fb)
+		res = self.like_post(idpost, token_fb)
 		if res==0:
 			check = self.check_cookie_fb(cookie_fb)
 			if check==False: return 4
 			else: return 2
-		request_id = self.get_request_id(access_token)
-		check = self.submit_post(idpost, request_id, access_token)
-		if check==False:
-			check = self.check_block_like(token_fb, idpost)
-			if check==0: return 3
-			return 1
-		return 40
+		elif res==2:
+			check = self.check_cookie_fb(cookie_fb)
+			if check==False: return 4
+			else: return 3
+		else:
+			request_id = self.get_request_id(access_token)
+			check = self.submit_post(idpost, request_id, access_token)
+			if check==False: return 1
+			else: return 40
 # /////////////////////////
 	def start(self, username, password):
 		if self.list_config[username] == {}:
