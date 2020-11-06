@@ -46,7 +46,7 @@ class Tool_Tanglikefree():
 		return headers_fb
 
 	def login_tlf(self, username, password):
-		# try:
+		try:
 			url = 'https://tanglikefree.com/api/auth/login'
 			payload = {'username': username, 'password': password, 'disable': 'true'}
 			res = self.ses.post(url, data = payload)
@@ -63,7 +63,7 @@ class Tool_Tanglikefree():
 				self.list_config[username]['token_fb'] = self.get_token_fb(cookie_fb)
 				return True
 			else: return False
-		# except: return False
+		except: return False
 
 	def get_info(self, access_token):
 		headers = {'Authorization': 'Bearer '+access_token}
@@ -293,7 +293,7 @@ class Tool_Tanglikefree():
 								nv = self.cout_all[username]['nv']
 								time_now = self.time_now()
 								print(f"[{time_now}]><[{nv}]|{idpost}|>+40<|{coin} coin", end=' ')
-								
+
 								if nv >= sl:
 									print(f"\n[Nick {username} đã hoàn thành chỉ tiêu]")
 									self.log_current(username, cout_loop)
@@ -311,6 +311,7 @@ class Tool_Tanglikefree():
 						if check_close==True: break
 					except:
 						while True:
+							self.log_current(username, cout_loop)
 							print("!!!Login after 5s")
 							sleep(5)
 							check = self.login_tlf(username, password)
