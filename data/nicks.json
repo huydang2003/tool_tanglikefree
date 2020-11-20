@@ -8,7 +8,13 @@
     {
         "username": "huyky3",
         "password": "doccos102",
-        "cookie": "",
+        "cookie": "c_user=100010129057059;xs=42%3AVFDO0y3sz2ET2A%3A2%3A1604326649%3A5708%3A6239;datr=-RSgX7JvKGbaI9oJOLWYnLIu;",
         "name_fb": "Hoang Nguyen"
+    },
+    {
+        "username": "hiepgakio",
+        "password": "hiepgakio",
+        "cookie": "c_user=100037641556876;xs=8%3AgFk1wLc4p3rQ5A%3A2%3A1605882729%3A14612%3A1395;datr=YdO3X7X25dTL6A1S4nrricpt;",
+        "name_fb": "Cỏ Cây"
     }
 ]

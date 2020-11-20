@@ -107,7 +107,7 @@ class setting_mt():
 		print("<<<///Danh sách nick chạy:")
 		cout = 0
 		for nick in list_nick:
-			print(f"{cout}.{list_nick[cout]['username']}")
+			print(f"{cout}.{list_nick[cout]['username']}|{list_nick[cout]['name_fb']}")
 			cout+=1
 		print("///>>>")
 	
@@ -117,13 +117,15 @@ class setting_mt():
 		nick['username'] = username
 		nick['password'] = password
 		nick['cookie'] = self.fill_cookie(cookie)
+		nick['name_fb'] = '???'
 		list_nick.append(nick)
 		self.save_file_json('data/nicks.json', list_nick)
 
 	def edit_nick(self, vt, cookie):
 		try:
 			list_nick = self.load_file_json('data/nicks.json')
-			list_nick[vt]['cookie'] = self.fill_cookie(cookie)
+			cookie = self.fill_cookie(cookie)
+			if cookie != '': list_nick[vt]['cookie'] = cookie
 			self.save_file_json('data/nicks.json', list_nick)
 		except: pass
 

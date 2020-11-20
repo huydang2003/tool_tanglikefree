@@ -128,13 +128,13 @@ class Tool_Tanglikefree():
 						if access_token == None:
 							print('\t[Login failed]')
 							self.list_nick_out.append(vt)
-							continue
+							return 0
 						print('\t[Login success]')
 						token_fb = self.fb_mt.get_token_fb(cookie_fb)
 						if token_fb == '':
 							print("\t[COOKIE DIE]")
 							self.list_nick_out.append(vt)
-							continue
+							return 0
 						info = tool.get_info(access_token)
 						info['name_fb'] = self.fb_mt.get_name_fb(token_fb, info['idfb'])
 						self.setting_mt.save_name_fb(username, info['name_fb'])
@@ -164,7 +164,7 @@ class Tool_Tanglikefree():
 						if res==0 or res==1:
 							self.list_idpost_error.append(idpost)
 							continue
-						elif res==2 or res==3:
+						elif res==3:
 							if res==2: print("\t[BLOCK LIKE]")
 							elif res==3: print("\t[COOKIE DIE]")
 							self.list_nick_out.append(username)
@@ -195,16 +195,18 @@ class Tool_Tanglikefree():
 					sleep(time_stop)
 				except:
 					while True:
-						print("Loi mang")
 						sleep(5)
 						self.list_access_token[username] = tool.login_tlf(username, password)
 						if self.list_access_token[username] != None: break
 
 	def run(self):
+		print("<><><><><><><><><><><>")
+		print('\t+Windows(0)\n\t+Termux(1)')
+		check = input('***Chạy trên: ')
+		if check=='0': cl = 'cls'
+		elif check=='1': cl = 'clear'
 		while True:
-			print("\n<><><><><>=========<><><><><><>\n")
-			# os.system('clear')
-			# os.system('cls')
+			os.system(cl)
 			self.setting_mt.show_nick()
 			print('[OPTION]')
 			print('\t1.Chạy\n\t2.Chỉnh sửa\n\t3.Thêm\n\t4.Xóa\n<><><><><><><>')
@@ -219,7 +221,7 @@ class Tool_Tanglikefree():
 								print("\t[Xóa thành công!!!]")
 								op = input('Xóa nữa không(y/n):')
 								if op!='y': break
-							except: pass
+							except: break
 					elif check=='3':
 						while True:
 							try:
@@ -230,9 +232,8 @@ class Tool_Tanglikefree():
 								print("\t[Thêm thành công!!!]")
 								op = input('Thêm nữa không(y/n):')
 								if op!='y': break
-							except: pass
-					# os.system('clear')
-					# os.system('cls')
+							except: break
+					os.system(cl)
 					self.setting_mt.show_nick()
 				elif check=='2':
 					while True:
@@ -243,9 +244,8 @@ class Tool_Tanglikefree():
 							print("\t[Sửa thành công!!!]")
 							op = input('Có muốn sửa nữa không(y/n):')
 							if op!='y': break
-						except: pass
-					# os.system('clear')
-					# os.system('cls')
+						except: break
+					os.system(cl)
 					self.setting_mt.show_nick()
 			elif check=='1':
 				list_vt = input('>>>>>Nhập nick chạy: ').split(' ')
@@ -261,6 +261,7 @@ class Tool_Tanglikefree():
 				self.list_nick = json.load(open('data/nicks.json'))
 				self.process(list_vt, max_job, cout_stop, time_stop, delay, st, en)
 				print("[Kết thúc tool]")
+				input()
 				return 0
 
 if __name__ == '__main__':
