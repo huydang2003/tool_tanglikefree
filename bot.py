@@ -9,7 +9,6 @@ from include.include import fb_mt, setting_mt
 
 class Tool_Tanglikefree():
 	if not os.path.exists('data'): os.mkdir('data')
-	# if not os.path.exists('data/nicks'): os.mkdir('data/nicks')
 	if not os.path.exists('data/nicks.json'): open('data/nicks.json', 'w').write('[]')
 	if not os.path.exists('data/today.txt'): open('data/today.txt', 'w').write(f'{localtime().tm_mday}{localtime().tm_mon}')
 	if not os.path.exists('data/update.json'): open('data/update.json', 'w').write('{}')
@@ -151,9 +150,11 @@ class Tool_Tanglikefree():
 
 					cout_local = 0
 					while True:
-						while True:
-							if len(self.list_post[username]) > 1: break
+						if len(self.list_post[username]) < 3:
 							self.list_post[username] = self.get_post(access_token)
+							if len(self.list_post[username]) == 0:
+								print('[HẾT NV]')
+								break
 						post = random.choice(self.list_post[username])
 						self.list_post[username].remove(post)
 
@@ -164,9 +165,13 @@ class Tool_Tanglikefree():
 						if res==0 or res==1:
 							self.list_idpost_error.append(idpost)
 							continue
+						elif res==2:
+							print("\t[BLOCK LIKE]")
+							self.list_nick_out.append(username)
+							self.setting_mt.log_current(username, cout_local)
+							break
 						elif res==3:
-							if res==2: print("\t[BLOCK LIKE]")
-							elif res==3: print("\t[COOKIE DIE]")
+							print("\t[COOKIE DIE]")
 							self.list_nick_out.append(username)
 							self.setting_mt.log_current(username, cout_local)
 							break
@@ -178,7 +183,7 @@ class Tool_Tanglikefree():
 							job_current = self.cout_all[username]
 							name_fb = self.name[username]
 							coin = self.cout_coin[username]
-							print(f'[{time_now}] [{job_current}]|{name_fb}|+40|{coin} coin')
+							print(f'[{time_now}] [{job_current}]|{name_fb}|+40|{coin} coin', end=' ')
 							if self.cout_all[username] >= max_job:
 								print(f"\n[Nick {username} đã hoàn thành số lượng]")
 								self.setting_mt.log_current(username, cout_local)
@@ -189,6 +194,7 @@ class Tool_Tanglikefree():
 								self.setting_mt.log_current(username, cout_local)
 								break
 							s = random.randint(st, en)
+							print(f"[wait {s}s]")
 							sleep(s)
 
 					print(f"[CHUYỂN NICK SAU {time_stop}s]")
@@ -258,10 +264,10 @@ class Tool_Tanglikefree():
 				en = int(delay[1])
 				print('[START]')
 				self.setting_mt.check_reset()
-				self.list_nick = json.load(open('data/nicks.json'))
+				self.list_nick = self.setting_mt.load_file_json('data/nicks.json')
 				self.process(list_vt, max_job, cout_stop, time_stop, delay, st, en)
 				print("[Kết thúc tool]")
-				input()
+				# input()
 				return 0
 
 if __name__ == '__main__':
