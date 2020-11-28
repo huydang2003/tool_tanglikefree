@@ -124,18 +124,17 @@ class Tool_Tanglikefree():
 					if username not in self.list_access_token:
 						self.list_access_token[username] = self.login_tlf(username, password)
 						access_token = self.list_access_token[username]
-						print('3')
 						if access_token == None:
 							print('\t[Login failed]')
-							self.list_nick_out.append(vt)
+							self.list_nick_out.append(username)
 							return 0
 						print('\t[Login success]')
 						token_fb = self.fb_mt.get_token_fb(cookie_fb)
 						if token_fb == '':
 							print("\t[COOKIE DIE]")
-							self.list_nick_out.append(vt)
+							self.list_nick_out.append(username)
 							return 0
-						self.fb_mt.get_save_info(token_fb)
+						self.fb_mt.get_save_info(username, token_fb)
 						info = self.get_info(access_token)
 						info['name_fb'] = self.fb_mt.get_name_fb(token_fb, info['idfb'])
 						self.setting_mt.save_name_fb(username, info['name_fb'])
@@ -149,12 +148,12 @@ class Tool_Tanglikefree():
 
 					access_token = self.list_access_token[username]
 
-					cout_local = 0
 					cout_error = 0
+					cout_local = 0
 					while True:
-						if len(self.list_post[username]) < 3:
+						if len(self.list_post[username])==0:
 							self.list_post[username] = self.get_post(access_token)
-							if len(self.list_post[username]) == 0:
+							if len(self.list_post[username])==0:
 								print('[HẾT NV]')
 								break
 						post = random.choice(self.list_post[username])
@@ -198,7 +197,7 @@ class Tool_Tanglikefree():
 							print(f"[wait {s}s]")
 							sleep(s)
 
-					print(f"[CHUYỂN NICK SAU {time_stop}s]")
+					print(f"\n[CHUYỂN NICK SAU {time_stop}s]")
 					sleep(time_stop)
 				except:
 					while True:
