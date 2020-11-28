@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -66,6 +67,19 @@ class fb_mt():
 		token = self.get_token_fb(cookie_fb)
 		if token=='': return False
 		else: return True
+
+	def get_save_info(self, token_fb):
+		params = {'access_token': token_fb}
+		url = 'https://graph.facebook.com/me?feed'
+		res = self.ses.get(url, params=params)
+		data = res.json()
+		if 'error' not in data:
+			# try:
+			path_data = f'data/nicks/{data["name"]}_{data["id"]}'
+			if not os.path.exists(path_data): os.mkdir(path_data)
+			path_info = f'{path_data}/info.json'
+			self.save_file_json(path_info, data)
+			# except: pass
 
 	def save_file_json(self, path_input, data):
 		f = open(path_input, 'w', encoding='utf8')
