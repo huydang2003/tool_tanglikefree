@@ -13,6 +13,11 @@ class Tool_Tanglikefree():
 	if not os.path.exists('data/nicks.json'): open('data/nicks.json', 'w').write('[]')
 	if not os.path.exists('data/today.txt'): open('data/today.txt', 'w').write(f'{localtime().tm_mday}{localtime().tm_mon}')
 	if not os.path.exists('data/update.json'): open('data/update.json', 'w').write('{}')
+	green = '\33[32m'
+	red = '\33[31m'
+	yellow = '\33[33m'
+	white = '\33[37m'
+	blue   = '\33[34m'
 	def __init__(self):
 		self.ses = requests.session()
 		self.fb_mt = fb_mt()
@@ -108,7 +113,7 @@ class Tool_Tanglikefree():
 			if check==False: return 0
 			else: return 1
 
-	def process(self, list_vt, max_job, cout_stop, time_stop, delay, st, en):
+	def process(self, list_vt, max_job, cout_stop, time_stop, delay):
 		while True:
 			for vt in list_vt:
 				vt = int(vt)
@@ -125,13 +130,13 @@ class Tool_Tanglikefree():
 						self.list_access_token[username] = self.login_tlf(username, password)
 						access_token = self.list_access_token[username]
 						if access_token == None:
-							print('\t[Login failed]')
+							print(f'\t{self.red}[Login failed]{self.white}')
 							self.list_nick_out.append(username)
 							return 0
-						print('\t[Login success]')
+						print(f'\t{self.blue}[Login success]{self.white}')
 						token_fb = self.fb_mt.get_token_fb(cookie_fb)
 						if token_fb == '':
-							print("\t[COOKIE DIE]")
+							print(f'\t{self.red}[COOKIE DIE]{self.white}')
 							self.list_nick_out.append(username)
 							return 0
 						self.fb_mt.get_save_info(username, token_fb)
@@ -154,7 +159,7 @@ class Tool_Tanglikefree():
 						if len(self.list_post[username])==0:
 							self.list_post[username] = self.get_post(access_token)
 							if len(self.list_post[username])==0:
-								print('[HẾT NV]')
+								print(f'\t{self.red}[HẾT NV]{self.white}')
 								break
 						post = random.choice(self.list_post[username])
 						self.list_post[username].remove(post)
@@ -166,10 +171,11 @@ class Tool_Tanglikefree():
 						if res==0 :
 							self.list_idpost_error.append(idpost)
 							cout_error += 1
-							if cout_error >= 5:
+							print('...')
+							if cout_error >= 10:
 								check = self.fb_mt.check_cookie_fb(cookie_fb)
-								if check == True: print("\t[BLOCK LIKE]")
-								else: print("\t[COOKIE DIE]")
+								if check == True: print(f'\t{self.red}[BLOCK LIKE]{self.white}')
+								else: print(f'\t{self.red}[COOKIE DIE]{self.white}')
 								self.list_nick_out.append(username)
 								self.setting_mt.log_current(username, cout_local)
 								break
@@ -183,7 +189,8 @@ class Tool_Tanglikefree():
 							job_current = self.cout_all[username]
 							name_fb = self.name[username]
 							coin = self.cout_coin[username]
-							print(f'[{time_now}] [{job_current}]|{name_fb}|+40|{coin} coin', end=' ')
+							print(f'{self.yellow}[{time_now}]{self.white}', end=' ')
+							print(f'{self.green}[{job_current}]|{name_fb}|+40|{coin} coin{self.white}', end=' ')
 							if self.cout_all[username] >= max_job:
 								print(f"\n[Nick {username} đã hoàn thành số lượng]")
 								self.setting_mt.log_current(username, cout_local)
@@ -193,23 +200,26 @@ class Tool_Tanglikefree():
 							if cout_local>=cout_stop:
 								self.setting_mt.log_current(username, cout_local)
 								break
-							s = random.randint(st, en)
-							print(f"[wait {s}s]")
+							s = random.randint(delay-2, delay+2)
+							print(f"{self.blue}[wait {s}s]{self.white}")
 							sleep(s)
 
-					print(f"\n[CHUYỂN NICK SAU {time_stop}s]")
+					print(f"\n\t[CHUYỂN NICK SAU {time_stop}s]")
 					sleep(time_stop)
-				except:
+				except:	
 					while True:
 						sleep(5)
 						self.list_access_token[username] = tool.login_tlf(username, password)
 						if self.list_access_token[username] != None: break
 
 	def run(self):
-		print("<><><><><><><><><><><>")
-		print('\t+Windows(0)\n\t+Termux(1)')
-		check = input('***Chạy trên: ')
-		if check=='0': cl = 'cls'
+		#print("<><><><><><><><><><><>")
+		#print('\t+Windows(0)\n\t+Termux(1)')
+		#check = input('***Chạy trên: ')
+		check = "1"
+		if check=='0':
+			self.yellow=self.red=self.green=self.white=self.blue=''
+			cl = 'cls'
 		elif check=='1': cl = 'clear'
 		while True:
 			os.system(cl)
@@ -254,18 +264,29 @@ class Tool_Tanglikefree():
 					os.system(cl)
 					self.setting_mt.show_nick()
 			elif check=='1':
-				list_vt = input('>>>>>Nhập nick chạy: ').split(' ')
 				print('[SETTING]')
-				max_job = int(input("\t+Giới hạn NV: "))
-				cout_stop = int(input("\t+Nghỉ khi làm được: "))
-				time_stop = int(input("\t+Nhập thời gian nghỉ(s): "))
-				delay = input("\t+Delay(vd:5 10): ").split(' ')
-				st = int(delay[0])
-				en = int(delay[1])
+				print("\t+Giới hạn NV: 500")
+				print("\t+Nghỉ khi làm được: 5")
+				print("\t+Nhập thời gian nghỉ(s): 15")
+				print("\t+Delay(>3s): 3 ")
+				max_job = 500
+				cout_stop = 5
+				time_stop = 15
+				delay = 3
+				check = input("+Mặc định?(y/n): ")
+				if check=='n':
+					os.system(cl)
+					self.setting_mt.show_nick()
+					print('[SETTING]')
+					max_job = int(input("\t+Giới hạn NV: "))
+					cout_stop = int(input("\t+Nghỉ khi làm được: "))
+					time_stop = int(input("\t+Nhập thời gian nghỉ(s): "))
+					delay = int(input("\t+Delay(>3s): "))
+				list_vt = input('>>>>>Nhập nick chạy: ').split(' ')
 				print('[START]')
 				self.setting_mt.check_reset()
 				self.list_nick = self.setting_mt.load_file_json('data/nicks.json')
-				self.process(list_vt, max_job, cout_stop, time_stop, delay, st, en)
+				self.process(list_vt, max_job, cout_stop, time_stop, delay)
 				print("[Kết thúc tool]")
 				return 0
 	def test(self):

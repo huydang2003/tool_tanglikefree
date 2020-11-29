@@ -1,0 +1,54 @@
+{
+    "id": "100002989237139",
+    "birthday": "07/19/1987",
+    "education": [
+        {
+            "school": {
+                "id": "288677691254702",
+                "name": "Trường Đại học Kinh tế - Đại học Quốc gia Hà Nội"
+            },
+            "type": "College",
+            "id": "3155510414558569"
+        },
+        {
+            "school": {
+                "id": "162280360450842",
+                "name": "THPT Cao Bá Quát - Gia Lâm - HN"
+            },
+            "type": "High School",
+            "id": "3155510207891923"
+        }
+    ],
+    "email": "ngodo97@yahoo.com",
+    "first_name": "Phạm",
+    "gender": "male",
+    "hometown": {
+        "id": "104699306235854",
+        "name": "Bát Tràng"
+    },
+    "last_name": "Quân",
+    "link": "https://www.facebook.com/bankqrutt.loeddesxemmoea.1",
+    "location": {
+        "id": "104699306235854",
+        "name": "Bát Tràng"
+    },
+    "locale": "vi_VN",
+    "middle_name": "Hồng",
+    "name": "Phạm Hồng Quân",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2020-11-04T07:02:28+0000",
+    "username": "bankqrutt.loeddesxemmoea.1",
+    "verified": true,
+    "work": [
+        {
+            "end_date": "0000-00",
+            "employer": {
+                "id": "106388046062960",
+                "name": "Hà Nội"
+            },
+            "start_date": "0000-00",
+            "id": "3155510517891892"
+        }
+    ]
+}
