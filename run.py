@@ -83,17 +83,21 @@ class Tool_Tanglikefree():
 		return request_id
 
 	def like_post(self, idpost, cookie_fb):
-		link = 'https://mbasic.facebook.com/reactions/picker/?is_permalink=1&ft_id='+idpost
+		link = f'https://mbasic.facebook.com/reactions/picker/?is_permalink=1&ft_id={idpost}&origin_uri=https://mbasic.facebook.com'
 		headers = self.fb_mt.get_headers_fb(cookie_fb)
 		res = self.ses.get(link, headers=headers)
-		soup = BeautifulSoup(res.content, 'html.parser')
-		soup = soup.body.find(id='root')
-		list_li = soup.find_all('li')	
-		try: url = list_li[0].a.get('href')
-		except: return 0	
-		link = 'https://mbasic.facebook.com' + url
-		self.ses.get(link, headers=headers)
-		return 1
+		link = res.url
+		if 'login.php' in link: return 2
+		else:
+			soup = BeautifulSoup(res.content, 'html.parser')
+			soup = soup.body.find(id='root')
+			list_li = soup.find_all('li')
+			if list_li!=[]:	
+				url = list_li[0].a.get('href')
+				link = 'https://mbasic.facebook.com' + url
+				self.ses.get(link, headers=headers)
+				return 1
+			else: return 0
 
 	def submit_post(self, idpost, request_id, access_token):
 		headers = self.fb_mt.get_headers_tlf(access_token)
@@ -104,14 +108,11 @@ class Tool_Tanglikefree():
 		if data['error']==False: return True
 		else: return False
 
-	def make_nv(self, idpost, access_token, cookie_fb):
+	def finish(self, access_token, idpost):
 		request_id = self.get_request_id(access_token)
-		res = self.like_post(idpost, cookie_fb)
-		if res==0: return 0
-		elif res==1: 
-			check = self.submit_post(idpost, request_id, access_token)
-			if check==False: return 0
-			else: return 1
+		check = self.submit_post(idpost, request_id, access_token)
+		if check==False: return False
+		else: return True
 
 	def process(self, list_vt, max_job, cout_stop, time_stop, delay):
 		while True:
@@ -167,47 +168,56 @@ class Tool_Tanglikefree():
 						idpost = post['idpost']
 						if idpost in self.list_idpost_error: continue
 
-						res = self.make_nv(idpost, access_token, cookie_fb)
-						if res==0 :
-							self.list_idpost_error.append(idpost)
-							cout_error += 1
-							print('...')
-							if cout_error >= 10:
-								check = self.fb_mt.check_cookie_fb(cookie_fb)
-								if check == True: print(f'\t{self.red}[BLOCK LIKE]{self.white}')
-								else: print(f'\t{self.red}[COOKIE DIE]{self.white}')
+						res = self.like_post(idpost, cookie_fb)
+						if res!=1:
+							if res==0:
+								self.list_idpost_error.append(idpost)
+								continue
+							elif res==2:
+								print(f'\t{self.red}[COOKIE DIE]{self.white}')
 								self.list_nick_out.append(username)
 								self.setting_mt.log_current(username, cout_local)
 								break
-							continue
 						else:
-							cout_local += 1
-							cout_error = 0
-							self.cout_all[username] += 1
-							self.cout_coin[username] += 40
-							time_now = self.setting_mt.time_now()
-							job_current = self.cout_all[username]
-							name_fb = self.name[username]
-							coin = self.cout_coin[username]
-							print(f'{self.yellow}[{time_now}]{self.white}', end=' ')
-							print(f'{self.green}[{job_current}]|{name_fb}|+40|{coin} coin{self.white}', end=' ')
-							if self.cout_all[username] >= max_job:
-								print(f"\n[Nick {username} đã hoàn thành số lượng]")
-								self.setting_mt.log_current(username, cout_local)
-								self.list_nick_out.append(username)
-								return 0
+							check = self.finish(access_token, idpost)
+							if check==False:
+								cout_error += 1
+								print('...')
+								if cout_error>=5:
+									check = self.fb_mt.check_cookie_fb(cookie_fb)
+									if check==True: print(f'\t{self.red}[BLOCK LIKE]{self.white}')
+									else: print(f'\t{self.red}[COOKIE DIE]{self.white}')
+									self.list_nick_out.append(username)
+									self.setting_mt.log_current(username, cout_local)
+									break
+							elif check==True:
+								cout_local += 1
+								cout_error = 0
+								self.cout_all[username] += 1
+								self.cout_coin[username] += 40
+								time_now = self.setting_mt.time_now()
+								job_current = self.cout_all[username]
+								name_fb = self.name[username]
+								coin = self.cout_coin[username]
+								print(f'{self.yellow}[{time_now}]{self.white}', end=' ')
+								print(f'{self.green}[{job_current}]|{name_fb}|+40|{coin} coin{self.white}', end=' ')
+								if self.cout_all[username] >= max_job:
+									print(f"\n[Nick {username} đã hoàn thành số lượng]")
+									self.setting_mt.log_current(username, cout_local)
+									self.list_nick_out.append(username)
+									return 0
 
-							if cout_local>=cout_stop:
-								self.setting_mt.log_current(username, cout_local)
-								break
-							s = random.randint(delay-2, delay+2)
-							print(f"{self.blue}[wait {s}s]{self.white}")
-							sleep(s)
-
+								if cout_local>=cout_stop:
+									self.setting_mt.log_current(username, cout_local)
+									break
+								s = random.randint(delay-2, delay+2)
+								print(f"{self.blue}[wait {s}s]{self.white}")
+								sleep(s)
 					print(f"\n\t[CHUYỂN NICK SAU {time_stop}s]")
 					sleep(time_stop)
 				except:	
 					while True:
+						print(f"{self.red}sleep 5s{self.white}")
 						sleep(5)
 						self.list_access_token[username] = tool.login_tlf(username, password)
 						if self.list_access_token[username] != None: break
@@ -289,15 +299,7 @@ class Tool_Tanglikefree():
 				self.process(list_vt, max_job, cout_stop, time_stop, delay)
 				print("[Kết thúc tool]")
 				return 0
-	def test(self):
-		username = 'huyka1'
-		password = 'doccos102'
-		access_token = self.login_tlf(username, password)
-		print(access_token)
-		lst = self.get_post(access_token)
-		print(lst)
 
 if __name__ == '__main__':
 	tool = Tool_Tanglikefree()
 	tool.run()
-	# tool.test()
