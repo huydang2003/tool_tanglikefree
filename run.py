@@ -134,7 +134,7 @@ class Auto_tanglikefree():
 								s = random.randint(st, en)
 								print(f"{self.blue}[wait {s}s]{self.white}")
 								sleep(s)
-				print(f"\n\t[CHUYỂN NICK SAU {time_stop}s]")
+				print(f"\n\t[NGHỈ {time_stop}s]")
 				sleep(time_stop)
 			except:
 				while True:
