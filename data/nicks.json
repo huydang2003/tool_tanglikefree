@@ -1,17 +1,5 @@
 [
     {
-        "username": "huyka1",
-        "password": "doccos102",
-        "cookie": "c_user=100053288408749;xs=38%3ALHbg-kyF11jygA%3A2%3A1606544229%3A16342%3A6287;datr=sGgtX_gCtRkK7Gzil-l24nTY;",
-        "name_fb": "Trần Thị Phương Hoa"
-    },
-    {
-        "username": "huyka2",
-        "password": "doccos102",
-        "cookie": "c_user=100053009673607;xs=22%3AHM2VONjmSZZ07A%3A2%3A1606550279%3A9155%3A6344;datr=sGgtX_gCtRkK7Gzil-l24nTY;",
-        "name_fb": "Triều Tiên Đặng Thị"
-    },
-    {
         "username": "huyka3",
         "password": "doccos102",
         "cookie": "c_user=100052027155558;xs=31%3AaYq-KKO4rFmAHw%3A2%3A1606552297%3A14612%3A6217;datr=sGgtX_gCtRkK7Gzil-l24nTY;",
@@ -20,7 +8,13 @@
     {
         "username": "huyky1",
         "password": "doccos102",
-        "cookie": "c_user=100053313009669;xs=14%3AboCkRBTEyjjy_A%3A2%3A1606571275%3A17304%3A6296;datr=DWAtX-UQemGayIW3cUKlLE0M;",
-        "name_fb": "Đặng Hiền"
+        "cookie": "c_user=100053313009669;xs=8%3AFazpEJ2s5JPDTQ%3A2%3A1607068802%3A17304%3A6269;datr=LBa1X2qWbDVW9LX0l6Mgn-H7;",
+        "name_fb": "???"
+    },
+    {
+        "username": "huyky7",
+        "password": "doccos102",
+        "cookie": "c_user=100011139101301;xs=47%3AoQCiIxraWyCUjg%3A2%3A1607069031%3A19113%3A6245;datr=LBa1X2qWbDVW9LX0l6Mgn-H7;",
+        "name_fb": "Huuhong Duong"
     }
 ]

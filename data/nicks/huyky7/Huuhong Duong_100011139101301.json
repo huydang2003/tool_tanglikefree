@@ -1,0 +1,53 @@
+{
+    "id": "100011139101301",
+    "birthday": "10/27/1988",
+    "education": [
+        {
+            "school": {
+                "id": "288677691254702",
+                "name": "Trường Đại học Kinh tế - Đại học Quốc gia Hà Nội"
+            },
+            "type": "College",
+            "id": "1232433893804569"
+        },
+        {
+            "school": {
+                "id": "103789649659423",
+                "name": "Hanoi – Amsterdam High School"
+            },
+            "type": "High School",
+            "id": "1232433827137909"
+        }
+    ],
+    "email": "kieu15807@gmail.com",
+    "first_name": "Huuhong",
+    "gender": "male",
+    "hometown": {
+        "id": "106388046062960",
+        "name": "Hà Nội"
+    },
+    "last_name": "Duong",
+    "link": "https://www.facebook.com/huuhong.duong.754",
+    "location": {
+        "id": "109266172434095",
+        "name": "Hoàng Mai, Hi Bac, Vietnam"
+    },
+    "locale": "vi_VN",
+    "name": "Huuhong Duong",
+    "published_timeline": true,
+    "timezone": 7,
+    "updated_time": "2020-12-02T15:53:42+0000",
+    "username": "huuhong.duong.754",
+    "verified": true,
+    "work": [
+        {
+            "end_date": "0000-00",
+            "employer": {
+                "id": "109167735769857",
+                "name": "Bắc Giang"
+            },
+            "start_date": "0000-00",
+            "id": "1232433953804563"
+        }
+    ]
+}
