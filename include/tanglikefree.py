@@ -18,6 +18,15 @@ class tanglikefree():
 			}
 		return headers_tlf
 
+	def check_loimang(self):
+		url = 'https://httpbin.org/ip'
+		try:
+			self.ses.get(url)
+			return True
+		except:
+			return False
+		
+
 	
 	def login_tlf(self, username, password):
 		try:

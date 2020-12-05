@@ -58,9 +58,9 @@ class Auto_tanglikefree():
 		while True:
 			try:
 				if len(self.list_post[username])==0:
-					# print("[Get NV]")
+					print("[Get NV]")
 					self.list_post[username] = self.tlf.get_post(access_token)
-					if len(self.list_post[username])==0:
+					if len(self.list_post[username]) == 0:
 						print(f'{self.red}[HẾT NV]{self.white}')
 						return 0
 				post = self.list_post[username].pop(0)
@@ -69,6 +69,8 @@ class Auto_tanglikefree():
 				check = self.fb.like_post(idpost, cookie_fb)
 				if check!=1:
 					if check==0:
+						print(f'{self.red}xxx{self.white}')
+						check = self.tlf.finish(access_token, idpost)
 						self.list_idpost_error.append(idpost)
 						continue
 					elif check==2:
@@ -116,8 +118,8 @@ class Auto_tanglikefree():
 				while True:
 					print(f'\t{self.red}1_lỗi mạng đợi 10s{self.white}')
 					sleep(10)
-					access_token = self.tlf.login_tlf(username, password)
-					if access_token!=None: break
+					check = self.tlf.check_loimang()
+					if check!=False: break
 
 	def operations(self, list_vt, max_job, cout_stop, time_stop, delay):
 		self.st.check_reset()
@@ -150,12 +152,13 @@ class Auto_tanglikefree():
 						while True:
 							print(f'\t{self.red}2_lỗi mạng đợi 10s{self.white}')
 							sleep(10)
-							access_token = self.tlf.login_tlf(username, password)
-							if access_token!=None: break
+							check = self.tlf.check_loimang()
+							if check!=False: break
 
 
 	def run(self):
 		check = 1
+		check = int(open('màu.txt', 'r').read())
 		if check==0:
 			self.yellow=self.red=self.green=self.white=self.blue=''
 			cl = 'cls'
