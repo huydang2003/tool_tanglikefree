@@ -28,7 +28,8 @@ class tanglikefree():
 			if data['error'] != False: return False
 			access_token = data['data']['access_token']
 			return access_token
-		except: return None
+		except: 
+			return None
 		
 	def get_coin(self, access_token):
 		headers = {'Authorization': 'Bearer '+access_token}
@@ -67,8 +68,11 @@ class tanglikefree():
 		url = 'https://tanglikefree.com/api/auth/Post/submitpost'
 		res = self.ses.post(url, data=payload, headers=headers)
 		data = res.json()
-		if data['error']==False: return True
-		else: return False
+		if 'error' in data:
+			if data['error']==False: return True
+			else: return False
+		else:
+			return False
 
 	def finish(self, access_token, idpost):
 		request_id = self.get_request_id(access_token)
